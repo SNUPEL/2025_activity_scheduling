@@ -27,7 +27,6 @@ def kahn_topological_sort_lh(project_data):
         node = queue.popleft()
         order.append(node)
 
-        # 새로 in-degree가 0이 된 노드들을 위한 임시 리스트
         new_zero_in_degree = []
 
         for succ in graph[node]:

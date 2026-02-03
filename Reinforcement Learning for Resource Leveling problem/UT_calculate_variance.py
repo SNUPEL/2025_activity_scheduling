@@ -1,7 +1,5 @@
 import numpy as np
 
-import numpy as np
-
 def calculate_variance(schedule, project_data):
     if not schedule:
         return 0.0

@@ -1,10 +1,7 @@
 import numpy as np
 
 def calculate_resource_profile(project_data, current_schedule, act, vtimes, fixed_length=50):
-    """
-    동적 관심 구간(작업 가능 시간대)의 리소스 사용 패턴을 추출하여
-    고정 길이(fixed_length)의 벡터로 변환합니다.
-    """
+
     if not vtimes:
         return np.array([])
 

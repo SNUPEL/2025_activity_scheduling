@@ -3,8 +3,8 @@ os.environ["KMP_DUPLICATE_LIB_OK"] = "TRUE"
 import torch
 import time
 
-from Attention_Network import SimplePointerNet
-from Data_preprocessing import import_schedule, convert_to_project_data
+from RL_network import SimplePointerNet
+from UT_data_preprocessing import import_schedule, convert_to_project_data
 from RL_inference_main import inference_by_groups
 from RL_inference_validate import validate_schedule, print_validation_results
 
@@ -25,7 +25,7 @@ def main(beam_width=5, hidden_dim=128, input_dim=6):
         return
 
     # Exel data 로드
-    data_file = '미래형과제 act데이터 전달_추가요소_231106_exp.xlsx'
+    data_file = 'Practical_data_HD.xlsx'
     activity_dict = import_schedule(data_file)
     project_data = convert_to_project_data(activity_dict)
 
@@ -47,15 +47,15 @@ def main(beam_width=5, hidden_dim=128, input_dim=6):
     print(f"실행 시간: {end_time - start_time:.2f}s")
     print("=" * 40)
 
-    # 7. 검증
-    is_valid, _ = validate_schedule(project_data, schedule)
-    print(f"RL 스케줄 유효성: {'PASS' if is_valid else 'FAIL'}")
+    # 제약 만족 여부 검증
+    is_valid, violations = validate_schedule(project_data, schedule)
+    print_validation_results(is_valid, violations)
 
 
 if __name__ == "__main__":
     # 여기서 원하는 값을 설정해서 실행하면 됩니다!
     main(
-        beam_width=10,  # 빔 수 조절
+        beam_width=100,  # 빔 수 조절
         hidden_dim=32,  # 모델 차원 조절
         input_dim=6  # 입력 피처 수 조절
     )
