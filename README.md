@@ -1,92 +1,69 @@
 # 2025_activity_scheduling
-# 2025_BLO_RL
 
 |                 Developer                |                 
 | :--------------------------------------: | 
 | [Hong Lee] |
 |         🧑‍💻 AI-Development               |       
-<<img width="900" height="706" alt="image" src="https://github.com/user-attachments/assets/d28ac756-1d67-499c-8a6d-cfdce3853cee" />>
 
 ## Project Overview
 - **Project**
-    - Activity scheduling Problem 
+    - Activity Scheduling / Resource Leveling Problem (RLP)
 - **Superviser**
     - Prof. Jong Hun Woo (SNU, KOREA)
 - **Data provider**
     - HD Korea Shipbuilding & Offshore Engineering (KSOE)
 
-<br>
-
 ## Project Introduction
-We develop a integrated shipyard block logistic optimization algorithm for shipyards 
-<br>
-Block logistic is composed of block transportation scheduling and storage optimization in block storage yard <br>
-Our project focued on **integrated simulation of two main problem and joint optimization algorithm**
-
-
-<img src="BRP_figure/BLO_problem.png"/>
-<br>
+This project develops a hybrid scheduling algorithm designed to optimize the start times of activities. 
+The primary objective is to minimize the daily resource variance, ensuring a smooth and efficient workflow.
+By moving beyond traditional rule-based heuristics, we combine Pointer Networks with an Attention Mechanism to effectively navigate complex precedence relationships and time constraints.
+<<img width="900" height="706" alt="image" src="https://github.com/user-attachments/assets/d28ac756-1d67-499c-8a6d-cfdce3853cee" />>
 
 
 ## Main Function
 
 ### 1️⃣ Overall framework
 #### 1.1 Algorithm overview
-<img src="BRP_figure/BLO_framework.png"/>
+<<img width="1424" height="813" alt="image" src="https://github.com/user-attachments/assets/f0984e36-48cb-422b-95bb-9f0aebfef5fe" />>
 
-- Retrieval and placement are considered independent decisions. <br>
-- The integrated optimization is achieved through the scheduling algorithm.<br>
-
-<br>
+- Heuristic + Deep Reinforcement Learning: Activity sequencing is determined via enhanced Kahn's algorithm, while Activity scheduling is decided by the reinforcement agent.
 
 ### 2️⃣ Markov decision process
 
 #### 2.1 State
-- State composed of unscheduled blocks and transporters
-    - **edge attributed graph**: compact and effective representation of block transportation statue
-        - nodes representing location which contain current transporter information
-        - edges representing blocks with origin and destination by disjunctive edge
-    - **Crystal graph convolutional neural network**: graph neural network that suitable for encoding edge attributed graph
+- State composed of unscheduled activity feature
+    - **Activity feature**: Composed of Duration, Resource requirement, number of Predecessors/Successors, and current Progress Ratio.
+    - **Resource utilization**: Time-series data representing the projected daily resource utilization of the entire project for each candidate start time.
 
 #### 2.2 Action
-- Assigining next transportation block for earilest finishing tranporter
-    - **candidate blocks**
-        - weight capacity constraint
-        - ready time constraint 
-    - **candidate transporter**
-        - rule based agent selection by earliest finishing tranporter
+- Pointer-based Selection: Selecting one specific start time from the list of Valid Start Times for the current activity.
+    - **Constraints**
+        - Precedence relationships
+        - Available time windows
 
 #### 2.3 Reward
-- minimization of the total coss
-- a sum of three cost-related rewards
-    - **Empty travel time**: the cost of operating the transporter
-    - **Tardiness**: the penalty cost for the delay in the delivery of block
-    - **Block relocation**: the cost occrus in storage yard
-<br>
+- The reward function is defined by the reduction in resource variance, measuring how much more effectively the model levels resources compared to heuristic.
+    - **Variance**: Represents the daily fluctuation of resource usage throughout the project duration
+    - **Optimization Goal**: A higher positive reward indicates that the Pointer Network has achieved a flatter resource histogram (lower variance) than the Greedy Heuristic
 
-### 3️⃣ DES-based learning environment
-- DES model of the post-stage outfitting process in shipyards
-- state transition that takes the action of the agent as the input and calculates the next state and reward.
+### 3️⃣ Scheduling environment
+- Project Simulator: An engine that generates random activities and automatically configures precedence graphs
+- Step-by-step Transition: Updates the global resource state in real-time as each action is taken, feeding the new state back to the agent
 
-<br>
-
-### 4️⃣ Scheduling agent with PPO algorithm
+### 4️⃣ Scheduling Agent with Attention Network
 #### 4.1 Network Structure
-<img src="BRP_figure/TP_network_structure.png"/>
+<<img width="1583" height="672" alt="image" src="https://github.com/user-attachments/assets/84c0915e-39ee-407a-ab3b-eb9d53a385ff" />?
 
-
-- **Representation module**
-    - Two types of latent representation are extracted from the heterogeneous graphs and auxiliary matrix, respectively
-    - For heterogeneous graphs, the embedding vectors of nodes are generated using the relational information between nodes
-    - For an auxiliary matrix, the embedding vectors for combinations of quay-walls and vessels are generated using the MLP layers 
-- **Aggregation module**
-    - Input vectors for the output model are generated based on the embedding vectors from the representation module
-- **Output module**
-    - The actor layers calculate the probability distribution over actions $\pi_{\theta} (\cdot|s_t)$
-    - The critic layers calculate a approximate state-value function $V_{\pi_{\theta}} (s_t)$, respectively
+- **Embedding Module**
+    - Transforms raw activity features and resource profiles into high-dimensional latent vectors
+- **Attention Module (Pointer Mechanism)**
+    - Self-Attention: Analyzes the correlation between different candidate time slots
+    - Pointer Query: Uses a learnable context vector to "point" to the most suitable start time
+- **Residual Connection**
+    - Combines the original feature vectors with the attention output to prevent information loss and stabilize training
 
 #### 4.2 Reinforcement Learning Algorithm
-- **PPO(proximal policy optimization)**
-    - Policy-based reinforcement learning algorithm
+- **Policy Gradient (REINFORCE with Baseline)**
+    - Utilizes the Greedy Heuristic as a baseline to reduce variance during training and ensure efficient policy updates
 
 
