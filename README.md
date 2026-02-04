@@ -17,14 +17,14 @@
 This project develops a hybrid scheduling algorithm designed to optimize the start times of activities. 
 The primary objective is to minimize the daily resource variance, ensuring a smooth and efficient workflow.
 By moving beyond traditional rule-based heuristics, we combine Pointer Networks with an Attention Mechanism to effectively navigate complex precedence relationships and time constraints.
-<<img width="900" height="706" alt="image" src="https://github.com/user-attachments/assets/d28ac756-1d67-499c-8a6d-cfdce3853cee" />>
+<img width="900" height="706" alt="image" src="https://github.com/user-attachments/assets/d28ac756-1d67-499c-8a6d-cfdce3853cee" />
 
 
 ## Main Function
 
 ### 1️⃣ Overall framework
 #### 1.1 Algorithm overview
-<<img width="1424" height="813" alt="image" src="https://github.com/user-attachments/assets/f0984e36-48cb-422b-95bb-9f0aebfef5fe" />>
+<img width="1424" height="813" alt="image" src="https://github.com/user-attachments/assets/f0984e36-48cb-422b-95bb-9f0aebfef5fe" />
 
 - Heuristic + Deep Reinforcement Learning: Activity sequencing is determined via enhanced Kahn's algorithm, while Activity scheduling is decided by the reinforcement agent.
 
@@ -52,7 +52,7 @@ By moving beyond traditional rule-based heuristics, we combine Pointer Networks 
 
 ### 4️⃣ Scheduling Agent with Attention Network
 #### 4.1 Network Structure
-<<img width="1583" height="672" alt="image" src="https://github.com/user-attachments/assets/84c0915e-39ee-407a-ab3b-eb9d53a385ff" />?
+<img width="1583" height="672" alt="image" src="https://github.com/user-attachments/assets/84c0915e-39ee-407a-ab3b-eb9d53a385ff" />
 
 - **Embedding Module**
     - Transforms raw activity features and resource profiles into high-dimensional latent vectors
@@ -65,5 +65,14 @@ By moving beyond traditional rule-based heuristics, we combine Pointer Networks 
 #### 4.2 Reinforcement Learning Algorithm
 - **Policy Gradient (REINFORCE with Baseline)**
     - Utilizes the Greedy Heuristic as a baseline to reduce variance during training and ensure efficient policy updates
+
+## Code structure
+
+### 1️⃣ Training
+<img width="1209" height="752" alt="image" src="https://github.com/user-attachments/assets/1643d869-84d1-4a76-ba0d-fe04590124d0" />
+
+### 2️⃣ Inference
+<img width="1209" height="752" alt="image" src="https://github.com/user-attachments/assets/c3284acb-1f22-41b2-87b0-296d7178bb0c" />
+
 
 
